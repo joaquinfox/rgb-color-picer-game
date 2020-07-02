@@ -1,10 +1,12 @@
-const gameLength = 6;
+let gameLength = 6;
 const colorSquares = document.querySelectorAll('.color_square');
 let colorArray = makeColorArray(gameLength);
 let targetColor = pickTargetColor();
 let targetColorDisplay = document.querySelector('#target_color_display');
 let userMessage = document.querySelector('#user_message');
 const resetButton = document.querySelector('#reset');
+let header = document.querySelector('header');
+let gameMode = document.querySelectorAll('.game_mode');
 
 reset();
 
@@ -15,8 +17,16 @@ resetButton.addEventListener('click', function () {
 function reset() {
   colorArray = makeColorArray(gameLength);
   targetColor = pickTargetColor();
+  header.style.backgroundColor = 'steelblue';
+  userMessage.innerText = 'Pick a color.';
+  resetButton.innerText = 'Change colors?';
   for (let i = 0; i < colorSquares.length; i++) {
-    colorSquares[i].style.backgroundColor = colorArray[i];
+    if (!colorArray[i]) {
+      colorSquares[i].style.display = 'none';
+    } else {
+      colorSquares[i].style.display = 'inline';
+      colorSquares[i].style.backgroundColor = colorArray[i];
+    }
   }
   targetColorDisplay.innerText = targetColor;
 }
@@ -26,15 +36,21 @@ for (let i = 0; i < colorSquares.length; i++) {
   colorSquares[i].addEventListener('click', () => {
     if (colorSquares[i].style.backgroundColor === targetColor) {
       userMessage.innerText = 'You got it!';
-      gameWin();
+      header.style.backgroundColor = targetColor;
+      resetButton.innerText = 'New game?';
     } else {
       userMessage.innerText = 'Try again';
     }
   });
 }
 
-// Handle event gameWin
-function gameWin() {}
+// GAME MODE
+for (let i = 0; i < gameMode.length; i++) {
+  gameMode[i].addEventListener('click', () => {
+    gameMode[i].innerText === 'EASY' ? (gameLength = 3) : (gameLength = 6);
+    reset();
+  });
+}
 
 // COLOR RELATED
 function rand(n) {
